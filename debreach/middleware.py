@@ -30,8 +30,6 @@ class CSRFCryptMiddleware(object):
                 POST._mutable = False
                 request.POST = POST
             except:
-                import traceback
-                traceback.print_exc()
                 log.exception('Error decoding csrfmiddlewaretoken')
                 raise SuspiciousOperation(
                     'csrfmiddlewaretoken has been tampered with')
