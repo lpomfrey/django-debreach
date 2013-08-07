@@ -18,7 +18,7 @@ Install from PyPI using:
 
     $ pip install django-debreach
 
-If installing from git you'll also need to install the ``PyCrypto``.
+If installing from git you'll also need to install the ``PyCrypto`` library.
 
 Add to your `INSTALLED_APPS`:
 ::
