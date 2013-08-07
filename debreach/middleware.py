@@ -9,8 +9,7 @@ from Crypto.Cipher import AES
 from django.core.exceptions import SuspiciousOperation
 from django.utils import six
 from django.utils.crypto import get_random_string
-from django.utils.encoding import force_text
-
+from django.utils.encoding import force_bytes
 
 log = logging.getLogger(__name__)
 
@@ -24,14 +23,15 @@ class CSRFCryptMiddleware(object):
                 POST = request.POST.copy()
                 token = POST.get('csrfmiddlewaretoken')
                 key, value = token.split('$')
-                key = base64.decodestring(key).strip()
-                value = base64.decodestring(value).strip()
+                key = base64.decodestring(force_bytes(key)).strip()
+                value = base64.decodestring(force_bytes(value)).strip()
                 aes = AES.new(key)
-                POST['csrfmiddlewaretoken'] = \
-                    force_text(aes.decrypt(value)).strip()
+                POST['csrfmiddlewaretoken'] = aes.decrypt(value).strip()
                 POST._mutable = False
                 request.POST = POST
             except:
+                import traceback
+                traceback.print_exc()
                 log.exception('Error decoding csrfmiddlewaretoken')
                 raise SuspiciousOperation(
                     'csrfmiddlewaretoken has been tampered with')
