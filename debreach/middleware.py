@@ -7,9 +7,9 @@ import random
 from Crypto.Cipher import AES
 
 from django.core.exceptions import SuspiciousOperation
-from django.utils import six
-from django.utils.crypto import get_random_string
-from django.utils.encoding import force_bytes
+
+from debreach.compat import force_bytes, get_random_string, string_types
+
 
 log = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ class RandomCommentMiddleware(object):
     def process_response(self, request, response):
         if not getattr(response, 'streaming', False) \
                 and response['Content-Type'] == 'text/html' \
-                and isinstance(response.content, six.string_types):
+                and isinstance(response.content, string_types):
             comment = '<!-- {0} -->'.format(
                 get_random_string(random.choice(range(12, 25))))
             response.content = '{0}{1}'.format(response.content, comment)

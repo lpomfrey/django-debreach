@@ -5,10 +5,9 @@ import base64
 from Crypto.Cipher import AES
 
 from django.middleware.csrf import get_token
-from django.utils import six
-from django.utils.crypto import get_random_string
-from django.utils.encoding import smart_text
 from django.utils.functional import lazy
+
+from debreach.compat import get_random_string, smart_text, text_type
 
 
 def csrf(request):
@@ -31,6 +30,6 @@ def csrf(request):
                 aes.encrypt('{0}{1}'.format(token, padding)))
             token = '$'.join((key, value))
             return smart_text(token)
-    _get_val = lazy(_get_val, six.text_type)
+    _get_val = lazy(_get_val, text_type)
 
     return {'csrf_token': _get_val()}
