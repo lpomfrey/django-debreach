@@ -27,7 +27,7 @@ class TestCSRFCryptMiddleware(TestCase):
         request = RequestFactory().post(
             '/',
             {'csrfmiddlewaretoken':
-                'MDEyMzQ1Njc4OWFiY2RlZg==$RKx8XwNfUHtWBD7anBt+ZA=='}
+                'Ump3NGw2b0t1R1J5VlZiOQ==$sBDBSs99N2pbyLVHloLaLg=='}
         )
         middleware = CSRFCryptMiddleware()
         middleware.process_request(request)
