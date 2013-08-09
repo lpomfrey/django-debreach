@@ -8,7 +8,8 @@ from Crypto.Cipher import AES
 
 from django.core.exceptions import SuspiciousOperation
 
-from debreach.compat import force_bytes, get_random_string, string_types
+from debreach.compat import \
+    force_bytes, get_random_string, string_types, force_text
 
 
 log = logging.getLogger(__name__)
@@ -43,5 +44,6 @@ class RandomCommentMiddleware(object):
                 and isinstance(response.content, string_types):
             comment = '<!-- {0} -->'.format(
                 get_random_string(random.choice(range(12, 25))))
-            response.content = '{0}{1}'.format(response.content, comment)
+            response.content = '{0}{1}'.format(
+                force_text(response.content), comment)
         return response

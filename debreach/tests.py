@@ -14,6 +14,13 @@ from debreach.compat import force_text
 from debreach.context_processors import csrf
 from debreach.middleware import CSRFCryptMiddleware, RandomCommentMiddleware
 
+try:
+    unichr
+except NameError:
+    pass
+else:
+    chr = unichr
+
 
 class TestCSRFCryptMiddleware(TestCase):
 
@@ -59,6 +66,23 @@ class TestRandomCommentMiddleware(TestCase):
         middleware = RandomCommentMiddleware()
         response = middleware.process_response(request, response)
         self.assertNotEqual(response.content, html)
+
+    def test_unicode_characters(self):
+        html = '''<!doctype html>
+<html>
+    <head>
+        <title>Page title</title>
+    </head>
+    <body>
+        <h1>Test</h1>
+        <p>{0}</p>
+    </body>
+</html>'''.format(''.join(chr(x) for x in range(9999)))
+        response = HttpResponse(html, content_type='text/html')
+        request = RequestFactory().get('/')
+        middleware = RandomCommentMiddleware()
+        response = middleware.process_response(request, response)
+        self.assertNotEqual(force_text(response.content), force_text(html))
 
 
 class TestContextProcessor(TestCase):
