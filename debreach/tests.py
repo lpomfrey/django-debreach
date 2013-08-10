@@ -102,6 +102,12 @@ class TestContextProcessor(TestCase):
         self.assertTrue(force_text(context['csrf_token']))
         self.assertNotEqual(force_text(context['csrf_token']), 'abc123')
 
+    def test_no_token_csrf(self):
+        request = RequestFactory().get('/')
+        context = csrf(request)
+        self.assertTrue(force_text(context['csrf_token']))
+        self.assertEqual(force_text(context['csrf_token']), 'NOTPROVIDED')
+
 
 @skipUnless(
     'test_project' in os.environ.get('DJANGO_SETTINGS_MODULE', ''),
