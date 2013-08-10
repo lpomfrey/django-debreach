@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import os
 import re
 
+from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.test import TestCase
@@ -39,6 +40,13 @@ class TestCSRFCryptMiddleware(TestCase):
         middleware = CSRFCryptMiddleware()
         middleware.process_request(request)
         self.assertEqual(request.POST.get('csrfmiddlewaretoken'), 'abc123')
+
+    def test_tampering(self):
+        request = RequestFactory().post(
+            '/', {'csrfmiddlewaretoken': '123$abc'})
+        middleware = CSRFCryptMiddleware()
+        with self.assertRaises(SuspiciousOperation):
+            middleware.process_request(request)
 
 
 class TestRandomCommentMiddleware(TestCase):
