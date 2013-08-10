@@ -4,8 +4,10 @@ django-debreach
 Basic mitigation against the `BREACH attack <http://breachattack.com/>`_ for 
 Django projects. 
 
-When combined with rate limiting in your web-server the techniques here should 
-provide at least some protection against the BREACH attack.
+When combined with rate limiting in your web-server, or by using something
+like `django-ratelimit <http://django-ratelimit.readthedocs.org/>`_, the 
+techniques here should provide at least some protection against the BREACH 
+attack.
 
 .. image:: https://travis-ci.org/lpomfrey/django-debreach.png?branch=master
     :target: https://travis-ci.org/lpomfrey/django-debreach
