@@ -12,6 +12,9 @@ attack.
 .. image:: https://travis-ci.org/lpomfrey/django-debreach.png?branch=master
     :target: https://travis-ci.org/lpomfrey/django-debreach
 
+.. image:: https://coveralls.io/repos/lpomfrey/django-debreach/badge.png?branch=master
+    :target: https://coveralls.io/r/lpomfrey/django-debreach?branch=master
+
 Installation
 ------------
 
