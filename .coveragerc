@@ -1,6 +1,7 @@
 [run]
 omit =
     *tests.py
+include = debreach/*
 
 [report]
 exclude_lines =

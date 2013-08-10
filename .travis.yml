@@ -6,7 +6,7 @@ install:
 before_script:
     - "pip install python-coveralls"
 script:
-    - "./run_tests.sh"
+    - "coverage run manage.py test debreach"
 after_success:
     - "coveralls"
 notifications:
