@@ -23,7 +23,7 @@ def csrf(request):
             # instead of returning an empty dict.
             return 'NOTPROVIDED'
         else:
-            key = base64.encodestring(get_random_string(16)).strip()
+            key = get_random_string(16)
             aes = AES.new(key)
             padding = ''.join(' ' for x in range(16 - (len(token) % 16)))
             value = base64.encodestring(
