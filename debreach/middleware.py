@@ -40,7 +40,7 @@ class RandomCommentMiddleware(object):
 
     def process_response(self, request, response):
         if not getattr(response, 'streaming', False) \
-                and response['Content-Type'] == 'text/html' \
+                and response['Content-Type'].strip().startswith('text/html') \
                 and isinstance(response.content, string_types):
             comment = '<!-- {0} -->'.format(
                 get_random_string(random.choice(range(12, 25))))
