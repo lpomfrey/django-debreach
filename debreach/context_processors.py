@@ -25,7 +25,8 @@ def csrf(request):
         else:
             key = get_random_string(16)
             aes = AES.new(key)
-            padding = ''.join(' ' for x in range(16 - (len(token) % 16)))
+            pad_length = 16 - (len(token) % 16 or 16)
+            padding = ''.join(' ' for x in range(pad_length))
             value = base64.encodestring(
                 aes.encrypt('{0}{1}'.format(token, padding))).strip()
             token = '$'.join((key, value))

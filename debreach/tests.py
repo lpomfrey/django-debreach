@@ -130,3 +130,15 @@ class IntegrationTests(TestCase):
             {'csrfmiddlewaretoken': token, 'message': 'Some rubbish'}
         )
         self.assertRedirects(post_resp, reverse('home'))
+
+    def test_round_trip(self):
+        request = RequestFactory().get('/')
+        request.META['CSRF_COOKIE'] = '0123456789abcdef'
+        token = force_text(csrf(request)['csrf_token'])
+        request = RequestFactory().post('/', {'csrfmiddlewaretoken': token})
+        middleware = CSRFCryptMiddleware()
+        middleware.process_request(request)
+        self.assertEqual(
+            force_text(request.POST.get('csrfmiddlewaretoken')),
+            force_text('0123456789abcdef')
+        )
