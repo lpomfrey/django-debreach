@@ -7,7 +7,8 @@ from Crypto.Cipher import AES
 from django.middleware.csrf import get_token
 from django.utils.functional import lazy
 
-from debreach.compat import get_random_string, smart_text, text_type
+from debreach.compat import \
+    get_random_string, smart_text, text_type, force_bytes
 
 
 def csrf(request):
@@ -23,12 +24,13 @@ def csrf(request):
             # instead of returning an empty dict.
             return 'NOTPROVIDED'
         else:
-            key = get_random_string(16)
+            key = force_bytes(get_random_string(16))
             aes = AES.new(key)
             pad_length = 16 - (len(token) % 16 or 16)
-            padding = ''.join(' ' for x in range(pad_length))
-            value = base64.encodestring(
-                aes.encrypt('{0}{1}'.format(token, padding))).strip()
+            padding = ''.join('#' for _ in range(pad_length))
+            value = base64.b64encode(
+                aes.encrypt('{0}{1}'.format(token, padding))
+            )
             token = '$'.join((key, value))
             return smart_text(token)
     _get_val = lazy(_get_val, text_type)

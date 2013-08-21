@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.utils.crypto import get_random_string
 from django.utils.unittest import skipUnless
 
 from debreach.compat import force_text
@@ -35,7 +36,7 @@ class TestCSRFCryptMiddleware(TestCase):
         request = RequestFactory().post(
             '/',
             {'csrfmiddlewaretoken':
-                'Ump3NGw2b0t1R1J5VlZiOQ==$sBDBSs99N2pbyLVHloLaLg=='}
+                'WaMeyTIUS6hOoTcm$TOKqMT3J0Gx2b15UH1MkRg=='}
         )
         middleware = CSRFCryptMiddleware()
         middleware.process_request(request)
@@ -131,14 +132,20 @@ class IntegrationTests(TestCase):
         )
         self.assertRedirects(post_resp, reverse('home'))
 
-    def test_round_trip(self):
-        request = RequestFactory().get('/')
-        request.META['CSRF_COOKIE'] = '0123456789abcdef'
-        token = force_text(csrf(request)['csrf_token'])
-        request = RequestFactory().post('/', {'csrfmiddlewaretoken': token})
-        middleware = CSRFCryptMiddleware()
-        middleware.process_request(request)
-        self.assertEqual(
-            force_text(request.POST.get('csrfmiddlewaretoken')),
-            force_text('0123456789abcdef')
-        )
+    def test_round_trip_loop(self):
+        '''
+        Checks a wide range of input tokens and keys
+        '''
+        for _ in range(1000):
+            request = RequestFactory().get('/')
+            csrf_token = get_random_string(32)
+            request.META['CSRF_COOKIE'] = csrf_token
+            token = force_text(csrf(request)['csrf_token'])
+            request = RequestFactory().post(
+                '/', {'csrfmiddlewaretoken': token})
+            middleware = CSRFCryptMiddleware()
+            middleware.process_request(request)
+            self.assertEqual(
+                force_text(request.POST.get('csrfmiddlewaretoken')),
+                force_text(csrf_token)
+            )

@@ -24,9 +24,10 @@ class CSRFCryptMiddleware(object):
                 POST = request.POST.copy()
                 token = POST.get('csrfmiddlewaretoken')
                 key, value = token.split('$')
-                value = base64.decodestring(force_bytes(value)).strip()
-                aes = AES.new(key.strip())
-                POST['csrfmiddlewaretoken'] = aes.decrypt(value).strip()
+                aes = AES.new(key)
+                POST['csrfmiddlewaretoken'] = force_bytes(
+                    aes.decrypt(base64.b64decode(value)).rstrip('#')
+                )
                 POST._mutable = False
                 request.POST = POST
             except:
