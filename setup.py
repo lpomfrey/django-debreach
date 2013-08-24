@@ -41,6 +41,7 @@ setup(
     author_email='lpomfrey@gmail.com',
     packages=find_packages(),
     install_requires=open('requirements.txt').read().split('\n'),
+    test_suite='runtests.runtests',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
