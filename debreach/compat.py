@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 try:
     # Django >= 1.4.5
     from django.utils.encoding import force_bytes, force_text, smart_text  # NOQA
-    from django.utils.six import string_types, text_type  # NOQA
+    from django.utils.six import string_types, text_type, binary_type  # NOQA
 except ImportError:  # pragma: no cover
     # Django < 1.4.5
     from django.utils.encoding import (                         # NOQA
@@ -13,6 +13,7 @@ except ImportError:  # pragma: no cover
     force_text = smart_text
     string_types = basestring
     text_type = unicode
+    binary_type = str
 
 try:
     # Django >= 1.4

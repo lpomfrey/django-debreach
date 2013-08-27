@@ -9,7 +9,7 @@ from Crypto.Cipher import AES
 from django.core.exceptions import SuspiciousOperation
 
 from debreach.compat import \
-    force_bytes, get_random_string, string_types, force_text
+    force_bytes, get_random_string, string_types, binary_type, force_text
 
 
 log = logging.getLogger(__name__)
@@ -26,7 +26,8 @@ class CSRFCryptMiddleware(object):
                 key, value = token.split('$')
                 aes = AES.new(key)
                 POST['csrfmiddlewaretoken'] = force_bytes(
-                    aes.decrypt(base64.b64decode(value)).rstrip('#')
+                    aes.decrypt(
+                        force_bytes(base64.b64decode(value))).rstrip(b'#')
                 )
                 POST._mutable = False
                 request.POST = POST
@@ -55,9 +56,10 @@ class CSRFCryptMiddleware(object):
 class RandomCommentMiddleware(object):
 
     def process_response(self, request, response):
+        str_types = string_types + (binary_type,)
         if not getattr(response, 'streaming', False) \
                 and response['Content-Type'].startswith('text/html') \
-                and isinstance(response.content, string_types):
+                and isinstance(response.content, str_types):
             comment = '<!-- {0} -->'.format(
                 get_random_string(random.choice(range(12, 25))))
             response.content = '{0}{1}'.format(
