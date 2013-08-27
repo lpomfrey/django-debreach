@@ -42,9 +42,29 @@ class TestCSRFCryptMiddleware(TestCase):
         middleware.process_request(request)
         self.assertEqual(request.POST.get('csrfmiddlewaretoken'), 'abc123')
 
+    def test_header_not_encoded(self):
+        request = RequestFactory().post('/', HTTP_X_CSRFTOKEN='abc123')
+        middleware = CSRFCryptMiddleware()
+        middleware.process_request(request)
+        self.assertEqual(request.META.get('HTTP_X_CSRFTOKEN'), 'abc123')
+
+    def test_header_encoded(self):
+        request = RequestFactory().post(
+            '/', HTTP_X_CSRFTOKEN='WaMeyTIUS6hOoTcm$TOKqMT3J0Gx2b15UH1MkRg==',
+        )
+        middleware = CSRFCryptMiddleware()
+        middleware.process_request(request)
+        self.assertEqual(request.META.get('HTTP_X_CSRFTOKEN'), b'abc123')
+
     def test_tampering(self):
         request = RequestFactory().post(
             '/', {'csrfmiddlewaretoken': '123$abc'})
+        middleware = CSRFCryptMiddleware()
+        with self.assertRaises(SuspiciousOperation):
+            middleware.process_request(request)
+
+    def test_header_tampering(self):
+        request = RequestFactory().post('/', HTTP_X_CSRFTOKEN='123$abc')
         middleware = CSRFCryptMiddleware()
         with self.assertRaises(SuspiciousOperation):
             middleware.process_request(request)
@@ -57,7 +77,7 @@ class TestRandomCommentMiddleware(TestCase):
         request = RequestFactory().get('/')
         middleware = RandomCommentMiddleware()
         response = middleware.process_response(request, response)
-        self.assertEqual(response.content, 'abc')
+        self.assertEqual(response.content, b'abc')
 
     def test_html_content_type(self):
         html = '''<!doctype html>
@@ -118,17 +138,36 @@ class IntegrationTests(TestCase):
 
     def test_adds_comment(self):
         resp = self.client.get(reverse('home'))
-        self.assertFalse(resp.content.endswith('</html>'))
+        self.assertFalse(resp.content.endswith(b'</html>'))
 
     def test_crypt_csrf_token(self):
         resp = self.client.get(reverse('test_form'))
         m = re.search(
-            r'value=\'(.*\$.*)\'', resp.content, re.MULTILINE | re.DOTALL)
+            r'value=\'(.*\$.*)\'',
+            force_text(resp.content),
+            re.MULTILINE | re.DOTALL
+        )
         self.assertEqual(len(m.groups()), 1)
         token = m.groups()[0].strip()
         post_resp = self.client.post(
             reverse('test_form'),
             {'csrfmiddlewaretoken': token, 'message': 'Some rubbish'}
+        )
+        self.assertRedirects(post_resp, reverse('home'))
+
+    def test_crypt_csrf_header(self):
+        resp = self.client.get(reverse('test_form'))
+        m = re.search(
+            r'value=\'(.*\$.*)\'',
+            force_text(resp.content),
+            re.MULTILINE | re.DOTALL
+        )
+        self.assertEqual(len(m.groups()), 1)
+        token = m.groups()[0].strip()
+        post_resp = self.client.post(
+            reverse('test_form'),
+            {'message': 'Some rubbish'},
+            X_CSRFTOKEN=token,
         )
         self.assertRedirects(post_resp, reverse('home'))
 
@@ -147,5 +186,26 @@ class IntegrationTests(TestCase):
             middleware.process_request(request)
             self.assertEqual(
                 force_text(request.POST.get('csrfmiddlewaretoken')),
+                force_text(csrf_token)
+            )
+
+    def test_round_trip_loop_header(self):
+        '''
+        Checks a wide range of input tokens and keys
+        '''
+        for _ in range(1000):
+            request = RequestFactory().get('/')
+            csrf_token = get_random_string(32)
+            request.META['CSRF_COOKIE'] = csrf_token
+            token = csrf(request)['csrf_token']
+            request = RequestFactory().post(
+                '/',
+                HTTP_X_CSRFTOKEN=force_text(token),
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+            )
+            middleware = CSRFCryptMiddleware()
+            middleware.process_request(request)
+            self.assertEqual(
+                force_text(request.META.get('HTTP_X_CSRFTOKEN')),
                 force_text(csrf_token)
             )

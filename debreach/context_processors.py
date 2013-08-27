@@ -8,7 +8,7 @@ from django.middleware.csrf import get_token
 from django.utils.functional import lazy
 
 from debreach.compat import \
-    get_random_string, smart_text, text_type, force_bytes
+    get_random_string, text_type, force_bytes, force_text
 
 
 def csrf(request):
@@ -31,8 +31,8 @@ def csrf(request):
             value = base64.b64encode(
                 aes.encrypt('{0}{1}'.format(token, padding))
             )
-            token = '$'.join((key, value))
-            return smart_text(token)
+            token = '$'.join((force_text(key), force_text(value)))
+            return force_text(token)
     _get_val = lazy(_get_val, text_type)
 
     return {'csrf_token': _get_val()}
