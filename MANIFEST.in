@@ -1,2 +1,1 @@
-include requirements.txt setup.py
-recursive-exclude / *.pyc
+include requirements.txt setup.py LICENSE
