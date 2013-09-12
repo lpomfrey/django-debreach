@@ -1,2 +1,3 @@
-include requirements.txt setup.py
-recursive-exclude / *.pyc
+include LICENSE
+include README.rst
+recursive-include debreach *.html *.png *.gif *js *jpg *jpeg *svg *py
