@@ -9,10 +9,9 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
-from django.utils.crypto import get_random_string
 from django.utils.unittest import skipUnless
 
-from debreach.compat import force_text
+from debreach.compat import force_text, get_random_string
 from debreach.context_processors import csrf
 from debreach.middleware import CSRFCryptMiddleware, RandomCommentMiddleware
 

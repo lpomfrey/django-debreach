@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.conf.urls import patterns, url
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
 from test_project.forms import TestForm
+
+try:
+    from django.conf.urls import patterns, url
+except ImportError:
+    from django.conf.urls.defaults import patterns, url
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin

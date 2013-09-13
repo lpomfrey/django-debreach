@@ -9,8 +9,8 @@ try:
 except ImportError:  # pragma: no cover
     # Django < 1.4.5
     from django.utils.encoding import (                         # NOQA
-        smart_unicode as smart_text, smart_str as force_bytes)  # NOQA
-    force_text = smart_text
+        smart_unicode as smart_text, smart_str as force_bytes,  # NOQA
+        force_unicode as force_text)                            # NOQA
     string_types = (basestring,)
     text_type = unicode
     binary_type = str
