@@ -21,6 +21,7 @@ class CSRFCryptMiddleware(object):
         if request.POST.get('csrfmiddlewaretoken') \
                 and '$' in request.POST.get('csrfmiddlewaretoken'):
             try:
+                post_was_mutable = request.POST._mutable
                 POST = request.POST.copy()
                 token = POST.get('csrfmiddlewaretoken')
                 key, value = token.split('$')
@@ -29,7 +30,7 @@ class CSRFCryptMiddleware(object):
                     aes.decrypt(
                         force_bytes(base64.b64decode(value))).rstrip(b'#')
                 )
-                POST._mutable = False
+                POST._mutable = post_was_mutable
                 request.POST = POST
             except:
                 log.exception('Error decoding csrfmiddlewaretoken')
