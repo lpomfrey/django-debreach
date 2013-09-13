@@ -71,7 +71,11 @@ so that ``{% csrf_token %}`` now produces a hidden field with a value that is
 ``"<random-crypt-text>$<actual-csrf-token-encrypted-with-random-crypt-text>"``.
 Then, when the form is POSTed, the middleware decrypts the CSRF token back into
 it's original form. This ensures that the CSRF content is never the same
-between requests.
+between requests. If you are passing the token using the ``X-CSRFToken``
+header (e.g. using XHR) that header will also be processed in the same way.
+
+Note that values that are unencrypted, or rather, don't contain a delimiting
+``$``, will be left unmodified.
 
 Content length modification
 +++++++++++++++++++++++++++
