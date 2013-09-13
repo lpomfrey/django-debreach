@@ -42,6 +42,26 @@ class TestCSRFCryptMiddleware(TestCase):
         middleware.process_request(request)
         self.assertEqual(request.POST.get('csrfmiddlewaretoken'), 'abc123')
 
+    def test_mutable_status(self):
+        request = RequestFactory().post(
+            '/',
+            {'csrfmiddlewaretoken':
+                'WaMeyTIUS6hOoTcm$TOKqMT3J0Gx2b15UH1MkRg=='}
+        )
+        request.POST._mutable = False
+        middleware = CSRFCryptMiddleware()
+        middleware.process_request(request)
+        self.assertFalse(request.POST._mutable)
+        request = RequestFactory().post(
+            '/',
+            {'csrfmiddlewaretoken':
+                'WaMeyTIUS6hOoTcm$TOKqMT3J0Gx2b15UH1MkRg=='}
+        )
+        request.POST._mutable = True
+        middleware = CSRFCryptMiddleware()
+        middleware.process_request(request)
+        self.assertTrue(request.POST._mutable)
+
     def test_header_not_encoded(self):
         request = RequestFactory().post('/', HTTP_X_CSRFTOKEN='abc123')
         middleware = CSRFCryptMiddleware()
