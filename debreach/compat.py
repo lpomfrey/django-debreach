@@ -11,7 +11,7 @@ except ImportError:  # pragma: no cover
     from django.utils.encoding import (                         # NOQA
         smart_unicode as smart_text, smart_str as force_bytes)  # NOQA
     force_text = smart_text
-    string_types = basestring
+    string_types = (basestring,)
     text_type = unicode
     binary_type = str
 

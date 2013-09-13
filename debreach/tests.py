@@ -201,7 +201,7 @@ class IntegrationTests(TestCase):
             request.META['CSRF_COOKIE'] = csrf_token
             token = force_text(csrf(request)['csrf_token'])
             request = RequestFactory().post(
-                '/', {'csrfmiddlewaretoken': token})
+                '/', {'csrfmiddlewaretoken': token[:]})
             middleware = CSRFCryptMiddleware()
             middleware.process_request(request)
             self.assertEqual(
