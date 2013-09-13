@@ -8,7 +8,7 @@ env:
     - DJANGO=1.4
     - DJANGO=1.5
 install:
-    - "if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install PyCrypto==2.3; else pip instal PyCrypto; fi"
+    - "if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install PyCrypto==2.3; else pip install PyCrypto; fi"
     - "pip install django==${DJANGO}"
 before_script:
     - "pip install python-coveralls coverage"
