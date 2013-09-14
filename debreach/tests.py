@@ -13,6 +13,7 @@ from django.utils.unittest import skipUnless
 
 from debreach.compat import force_text, get_random_string
 from debreach.context_processors import csrf
+from debreach.decorators import append_random_comment, random_comment_exempt
 from debreach.middleware import CSRFCryptMiddleware, RandomCommentMiddleware
 
 try:
@@ -131,6 +132,51 @@ class TestRandomCommentMiddleware(TestCase):
         middleware = RandomCommentMiddleware()
         response = middleware.process_response(request, response)
         self.assertNotEqual(force_text(response.content), force_text(html))
+
+    def test_exemption(self):
+        html = '''<html>
+    <head><title>Test</title></head>
+    <body><p>Test body.</p></body>
+</html>'''
+        response = HttpResponse(html)
+        response._random_comment_exempt = True
+        request = RequestFactory().get('/')
+        middleware = RandomCommentMiddleware()
+        response = middleware.process_response(request, response)
+        self.assertEqual(force_text(response.content), html)
+
+
+class TestDecorators(TestCase):
+
+    def test_append_random_comment(self):
+        html = '''<html>
+    <head><title>Test</title></head>
+    <body><p>Test body.</p></body>
+</html>'''
+
+        @append_random_comment
+        def test_view(request):
+            return HttpResponse(html)
+
+        request = RequestFactory().get('/')
+        response = test_view(request)
+        self.assertNotEqual(force_text(response.content), html)
+        self.assertIn('<!-- ', force_text(response.content))
+        self.assertIn(' -->', force_text(response.content))
+
+    def test_random_comment_exempt(self):
+        html = '''<html>
+    <head><title>Test</title></head>
+    <body><p>Test body.</p></body>
+</html>'''
+
+        @random_comment_exempt
+        def test_view(request):
+            return HttpResponse(html)
+
+        request = RequestFactory().get('/')
+        response = test_view(request)
+        self.assertTrue(response._random_comment_exempt)
 
 
 class TestContextProcessor(TestCase):

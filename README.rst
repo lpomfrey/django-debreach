@@ -77,11 +77,24 @@ header (e.g. using XHR) that header will also be processed in the same way.
 Note that values that are unencrypted, or rather, don't contain a delimiting
 ``$``, will be left unmodified.
 
+
 Content length modification
 +++++++++++++++++++++++++++
-To also randomise the content length of HTML content, add the
+
+django-debreach also enable you to counter the BREACH attack by randomising the
+content length of each page. This is acheived by adding a random string of 
+between 12 and 25 characters as a comment to the end of the HTML content. Note
+that this will only be applied to responses with a content type of
+``text/html``.
+
+To enable content length modification for all responses, add the
 ``debreach.middleware.RandomCommentMiddleware`` to the *start* of your
 middleware, but *before* the ``GzipMiddleware`` if you are using that.
 
-This works by adding a random string of between 12 and 25 characters as a
-comment to the end of the HTML content.
+If you wish to disable this feature for selected views, simply apply the
+``debreach.decorators.random_comment_exempt`` decorator to the view.
+
+If you only want to protect a subset of views with content length modification
+then it may be easier to not use the middleware, but to selectively apply the
+``debreach.decorators.append_random_comment`` decorator to the views you want
+protected.
