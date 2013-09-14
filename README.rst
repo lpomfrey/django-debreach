@@ -81,8 +81,8 @@ Note that values that are unencrypted, or rather, don't contain a delimiting
 Content length modification
 +++++++++++++++++++++++++++
 
-django-debreach also enable you to counter the BREACH attack by randomising the
-content length of each page. This is acheived by adding a random string of 
+django-debreach also enables you to counter the BREACH attack by randomising the
+content length of each response. This is acheived by adding a random string of 
 between 12 and 25 characters as a comment to the end of the HTML content. Note
 that this will only be applied to responses with a content type of
 ``text/html``.
