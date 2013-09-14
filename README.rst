@@ -24,15 +24,13 @@ attack.
 Installation
 ------------
 
-Install from PyPI using:
-::
+Install from PyPI using::
 
     $ pip install django-debreach
 
 If installing from git you'll also need to install the ``PyCrypto`` library.
 
-Add to your `INSTALLED_APPS`:
-::
+Add to your `INSTALLED_APPS`::
 
     INSTALLED_APPS = (
         ...
@@ -46,9 +44,8 @@ Configuration
 CSRF token masking
 ++++++++++++++++++
 To mask CSRF tokens in the template add the
-``debreach.context_processors.csrf``
-to the end of your `TEMPLATE_CONTEXT_PROCESSORS`:
-::
+``debreach.context_processors.csrf`` context processor to the end of your 
+`TEMPLATE_CONTEXT_PROCESSORS`::
 
     TEMPLATE_CONTEXT_PROCESSORS = (
         ...
@@ -56,8 +53,7 @@ to the end of your `TEMPLATE_CONTEXT_PROCESSORS`:
     )
 
 And add the ``debreach.middleware.CSRFCryptMiddleware`` to your middleware,
-*before* ``django.middleware.csrf.CSRFMiddleware``:
-::
+*before* ``django.middleware.csrf.CSRFMiddleware``::
 
     MIDDLEWARE_CLASSES = (
         'debreach.middleware.CSRFCryptMiddleware',
@@ -89,7 +85,20 @@ that this will only be applied to responses with a content type of
 
 To enable content length modification for all responses, add the
 ``debreach.middleware.RandomCommentMiddleware`` to the *start* of your
-middleware, but *before* the ``GzipMiddleware`` if you are using that.
+middleware, but *after* the ``GzipMiddleware`` if you are using that.::
+
+    MIDDLEWARE_CLASSES = (
+        'debreach.middleware.RandomCommentMiddleware',
+        ...
+    )
+
+or::
+
+    MIDDLEWARE_CLASSES = (
+        'django.middleware.gzip.GzipMiddleware',
+        'debreach.middleware.RandomCommentMiddleware',
+        ...
+    )
 
 If you wish to disable this feature for selected views, simply apply the
 ``debreach.decorators.random_comment_exempt`` decorator to the view.
