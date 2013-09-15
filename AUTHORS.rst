@@ -5,9 +5,10 @@ Credits
 Development Lead
 ----------------
 
-* Luke Pomfrey (@lpomfrey)
+* Luke Pomfrey <pomfrey@gmail.com>
 
 Contributors
 ------------
 
-None yet. Why not be the first?
+* Phillipe Ombredanne (https://github.com/pombredanne)
+* Christopher Ghormley (https://github.com/csghormley)
