@@ -9,3 +9,4 @@
 docs/_build
 .coverage
 .tox
+__pycache__
