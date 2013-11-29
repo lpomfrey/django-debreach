@@ -145,6 +145,14 @@ class TestRandomCommentMiddleware(TestCase):
         response = middleware.process_response(request, response)
         self.assertEqual(force_text(response.content), html)
 
+    def test_missing_content_type(self):
+        request = RequestFactory().get('/')
+        response = HttpResponse('')
+        del response['Content-Type']
+        middleware = RandomCommentMiddleware()
+        processed_response = middleware.process_response(request, response)
+        self.assertEqual(response, processed_response)
+
 
 class TestDecorators(TestCase):
 
