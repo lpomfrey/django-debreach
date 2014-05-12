@@ -153,6 +153,13 @@ class TestRandomCommentMiddleware(TestCase):
         processed_response = middleware.process_response(request, response)
         self.assertEqual(response, processed_response)
 
+    def test_empty_response_body_ignored(self):
+        request = RequestFactory().get('/')
+        response = HttpResponse('')
+        middleware = RandomCommentMiddleware()
+        processed_response = middleware.process_response(request, response)
+        self.assertEqual(len(response.content), 0)
+
 
 class TestDecorators(TestCase):
 

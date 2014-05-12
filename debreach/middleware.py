@@ -60,6 +60,7 @@ class RandomCommentMiddleware(object):
         str_types = string_types + (binary_type,)
         if not getattr(response, 'streaming', False) \
                 and response.get('Content-Type', '').startswith('text/html') \
+                and response.content \
                 and isinstance(response.content, str_types) \
                 and not getattr(response, '_random_comment_exempt', False):
             comment = '<!-- {0} -->'.format(
