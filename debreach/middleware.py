@@ -17,6 +17,11 @@ log = logging.getLogger(__name__)
 
 class CSRFCryptMiddleware(object):
 
+    def _decode(self, token):
+        key, value = token.split('$')
+        aes = AES.new(key)
+        return force_bytes(aes.decrypt(base64.b64decode(value)).rstrip(b'#'))
+
     def process_request(self, request):
         if request.POST.get('csrfmiddlewaretoken') \
                 and '$' in request.POST.get('csrfmiddlewaretoken'):
@@ -24,12 +29,7 @@ class CSRFCryptMiddleware(object):
                 post_was_mutable = request.POST._mutable
                 POST = request.POST.copy()
                 token = POST.get('csrfmiddlewaretoken')
-                key, value = token.split('$')
-                aes = AES.new(key)
-                POST['csrfmiddlewaretoken'] = force_bytes(
-                    aes.decrypt(
-                        force_bytes(base64.b64decode(value))).rstrip(b'#')
-                )
+                POST['csrfmiddlewaretoken'] = self._decode(token)
                 POST._mutable = post_was_mutable
                 request.POST = POST
             except:
@@ -41,11 +41,7 @@ class CSRFCryptMiddleware(object):
             try:
                 META = request.META.copy()
                 token = META.get('HTTP_X_CSRFTOKEN')
-                key, value = token.split('$')
-                aes = AES.new(key)
-                META['HTTP_X_CSRFTOKEN'] = force_bytes(
-                    aes.decrypt(base64.b64decode(value)).rstrip(b'#')
-                )
+                META['HTTP_X_CSRFTOKEN'] = self._decode(token)
                 request.META = META
             except:
                 log.exception('Error decoding csrfmiddlewaretoken')
