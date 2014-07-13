@@ -4,7 +4,10 @@ from __future__ import unicode_literals
 import os
 import sys
 
+import django
 
+
+django.setup()
 os.environ['PYTHONPATH'] = os.path.dirname(__file__)
 os.environ['DJANGO_SETTINGS_MODULE'] = 'test_project.settings'
 
