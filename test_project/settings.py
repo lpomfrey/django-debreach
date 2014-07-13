@@ -2,13 +2,16 @@
 
 import os
 
+import django
+
 
 DIRNAME = os.path.dirname(__file__)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+if django.VERSION >= (1, 6):
+    TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 DATABASES = {
     'default': {
