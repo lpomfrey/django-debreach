@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 try:
     from django.apps import AppConfig
-except ImportError:
+except ImportError:  # pragma: no cover
     class AppConfig(object):
         pass
 
