@@ -41,8 +41,10 @@ setup(
     author_email='lpomfrey@gmail.com',
     packages=find_packages(),
     install_requires=[
-        'django',
         'PyCrypto',
+    ],
+    tests_require=[
+        'django',
     ],
     test_suite='runtests.runtests',
     classifiers=[
