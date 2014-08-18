@@ -21,7 +21,7 @@ attack.
     :target: https://pypi.python.org/pypi/django-debreach
     :alt: Latest version
 
-.. image:: https://pypip.in/downloads/django-debreach/badge.svg
+.. image:: https://pypip.in/download/django-debreach/badge.svg
     :target: https://pypi.python.org/pypi/django-debreach
     :alt: Downloads
 
