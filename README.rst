@@ -29,6 +29,10 @@ attack.
     :target: https://pypi.python.org/pypi/django-debreach
     :alt: License
 
+.. image:: https://pypip.in/py_versions/django-debreach/badge.svg
+    :target: https://pypi.python.org/pypi/django-debreach
+    :alt: Supported Python versions
+
 Installation
 ------------
 
