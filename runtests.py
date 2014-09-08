@@ -16,7 +16,7 @@ def runtests():
         django.setup()
     from django.conf import settings
     from django.test.utils import get_runner
-    test_runner = get_runner(settings)()
+    test_runner = get_runner(settings)(verbosity=2)
     failures = test_runner.run_tests(['debreach'])
     sys.exit(failures)
 

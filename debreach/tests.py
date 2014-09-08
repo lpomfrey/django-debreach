@@ -35,8 +35,7 @@ class TestCSRFCryptMiddleware(TestCase):
     def test_encoded(self):
         request = RequestFactory().post(
             '/',
-            {'csrfmiddlewaretoken':
-                'WaMeyTIUS6hOoTcm$TOKqMT3J0Gx2b15UH1MkRg=='}
+            {'csrfmiddlewaretoken': 'aBcDeF$ACAAdVd1'}
         )
         middleware = CSRFCryptMiddleware()
         middleware.process_request(request)
@@ -45,8 +44,7 @@ class TestCSRFCryptMiddleware(TestCase):
     def test_mutable_status(self):
         request = RequestFactory().post(
             '/',
-            {'csrfmiddlewaretoken':
-                'WaMeyTIUS6hOoTcm$TOKqMT3J0Gx2b15UH1MkRg=='}
+            {'csrfmiddlewaretoken': 'aBcDeF$ACAAdVd1'}
         )
         request.POST._mutable = False
         middleware = CSRFCryptMiddleware()
@@ -54,8 +52,7 @@ class TestCSRFCryptMiddleware(TestCase):
         self.assertFalse(request.POST._mutable)
         request = RequestFactory().post(
             '/',
-            {'csrfmiddlewaretoken':
-                'WaMeyTIUS6hOoTcm$TOKqMT3J0Gx2b15UH1MkRg=='}
+            {'csrfmiddlewaretoken': 'aBcDeF$ACAAdVd1'}
         )
         request.POST._mutable = True
         middleware = CSRFCryptMiddleware()
@@ -70,21 +67,21 @@ class TestCSRFCryptMiddleware(TestCase):
 
     def test_header_encoded(self):
         request = RequestFactory().post(
-            '/', HTTP_X_CSRFTOKEN='WaMeyTIUS6hOoTcm$TOKqMT3J0Gx2b15UH1MkRg==',
+            '/', HTTP_X_CSRFTOKEN='aBcDeF$ACAAdVd1',
         )
         middleware = CSRFCryptMiddleware()
         middleware.process_request(request)
-        self.assertEqual(request.META.get('HTTP_X_CSRFTOKEN'), b'abc123')
+        self.assertEqual(request.META.get('HTTP_X_CSRFTOKEN'), 'abc123')
 
     def test_tampering(self):
         request = RequestFactory().post(
-            '/', {'csrfmiddlewaretoken': '123$abc'})
+            '/', {'csrfmiddlewaretoken': '123456$abc'})
         middleware = CSRFCryptMiddleware()
         with self.assertRaises(SuspiciousOperation):
             middleware.process_request(request)
 
     def test_header_tampering(self):
-        request = RequestFactory().post('/', HTTP_X_CSRFTOKEN='123$abc')
+        request = RequestFactory().post('/', HTTP_X_CSRFTOKEN='123456$abc')
         middleware = CSRFCryptMiddleware()
         with self.assertRaises(SuspiciousOperation):
             middleware.process_request(request)
@@ -158,7 +155,7 @@ class TestRandomCommentMiddleware(TestCase):
         response = HttpResponse('')
         middleware = RandomCommentMiddleware()
         processed_response = middleware.process_response(request, response)
-        self.assertEqual(len(response.content), 0)
+        self.assertEqual(len(processed_response.content), 0)
 
 
 class TestDecorators(TestCase):

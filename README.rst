@@ -40,8 +40,6 @@ Install from PyPI using::
 
     $ pip install django-debreach
 
-If installing from git you'll also need to install the ``PyCrypto`` library.
-
 Add to your `INSTALLED_APPS`::
 
     INSTALLED_APPS = (
@@ -74,16 +72,16 @@ And add the ``debreach.middleware.CSRFCryptMiddleware`` to your middleware,
         ...
     )
 
-This works by AES encrypting the CSRF token when it is added to the template,
+This works by xor-ing the CSRF token when it is added to the template,
 so that ``{% csrf_token %}`` now produces a hidden field with a value that is 
-``"<random-crypt-text>$<actual-csrf-token-encrypted-with-random-crypt-text>"``.
-Then, when the form is POSTed, the middleware decrypts the CSRF token back into
+``"<random-string>$<actual-csrf-token-xor-ed-with-random-string>"``.
+Then, when the form is POSTed, the middleware xors the CSRF token back into
 it's original form. This ensures that the CSRF content is never the same
 between requests. If you are passing the token using the ``X-CSRFToken``
 header (e.g. using XHR) that header will also be processed in the same way.
 
-Note that values that are unencrypted, or rather, don't contain a delimiting
-``$``, will be left unmodified.
+Note that values that are unchanged by django-debreach, or rather, don't 
+contain a delimiting ``$``, will be left unmodified.
 
 
 Content length modification

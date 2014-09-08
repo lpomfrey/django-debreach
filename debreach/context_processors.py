@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import base64
-from Crypto.Cipher import AES
-
 from django.middleware.csrf import get_token
 from django.utils.functional import lazy
 
-from debreach.compat import \
-    get_random_string, text_type, force_bytes, force_text
+from debreach.compat import (
+    b64_encode, get_random_string, text_type, force_bytes, force_text, xor)
 
 
 def csrf(request):
@@ -24,15 +21,13 @@ def csrf(request):
             # instead of returning an empty dict.
             return 'NOTPROVIDED'
         else:
-            key = force_bytes(get_random_string(16))
-            aes = AES.new(key)
-            pad_length = 16 - (len(token) % 16 or 16)
-            padding = ''.join('#' for _ in range(pad_length))
-            value = base64.b64encode(
-                aes.encrypt('{0}{1}'.format(token, padding))
+            token = force_bytes(token, encoding='latin-1')
+            key = force_bytes(
+                get_random_string(len(token)),
+                encoding='latin-1'
             )
-            token = '$'.join((force_text(key), force_text(value)))
-            return force_text(token)
+            value = b64_encode(xor(token, key))
+            return force_text(b'$'.join((key, value)), encoding='latin-1')
     _get_val = lazy(_get_val, text_type)
 
     return {'csrf_token': _get_val()}

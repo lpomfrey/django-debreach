@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import base64
 import logging
 import random
-from Crypto.Cipher import AES
 
 from django.core.exceptions import SuspiciousOperation
 
-from debreach.compat import \
-    force_bytes, get_random_string, string_types, binary_type, force_text
+from debreach.compat import (
+    b64_decode, force_bytes, get_random_string, string_types, binary_type,
+    force_text, xor)
 
 
 log = logging.getLogger(__name__)
@@ -18,9 +17,8 @@ log = logging.getLogger(__name__)
 class CSRFCryptMiddleware(object):
 
     def _decode(self, token):
-        key, value = token.split('$')
-        aes = AES.new(key)
-        return force_bytes(aes.decrypt(base64.b64decode(value)).rstrip(b'#'))
+        key, value = force_bytes(token, encoding='latin-1').split(b'$', 1)
+        return force_text(xor(b64_decode(value), key), encoding='latin-1')
 
     def process_request(self, request):
         if request.POST.get('csrfmiddlewaretoken') \
@@ -47,7 +45,7 @@ class CSRFCryptMiddleware(object):
                 log.exception('Error decoding csrfmiddlewaretoken')
                 raise SuspiciousOperation(
                     'X-CSRFToken header has been tampered with')
-            return
+        return None
 
 
 class RandomCommentMiddleware(object):

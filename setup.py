@@ -40,9 +40,7 @@ setup(
     author='Luke Pomfrey',
     author_email='lpomfrey@gmail.com',
     packages=find_packages(),
-    install_requires=[
-        'PyCrypto',
-    ],
+    install_requires=[],
     tests_require=[
         'django',
     ],

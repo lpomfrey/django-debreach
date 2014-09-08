@@ -9,9 +9,8 @@ env:
     - DJANGO="django>=1.4,<1.5"
     - DJANGO="django>=1.5,<1.6"
     - DJANGO="django>=1.6,<1.7"
-    - DJANGO="https://www.djangoproject.com/download/1.7c1/tarball/"
+    - DJANGO="django>=1.7"
 install:
-    - "if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install PyCrypto==2.3; else pip install PyCrypto; fi"
     - "pip install ${DJANGO}"
 before_script:
     - "pip install python-coveralls coverage"
