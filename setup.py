@@ -39,7 +39,7 @@ setup(
                 'protection against the BREACH attack in Django.',
     author='Luke Pomfrey',
     author_email='lpomfrey@gmail.com',
-    packages=find_packages(),
+    packages=find_packages(exclude=('test_project', 'docs')),
     install_requires=[],
     tests_require=[
         'django',
