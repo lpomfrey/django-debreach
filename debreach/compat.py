@@ -30,6 +30,7 @@ except ImportError:  # pragma: no cover
 
 
 def xor(s, pad):
+    '''XOR a given string ``s`` with the one-time-pad ``pad``'''
     from itertools import cycle
     s = bytearray(force_bytes(s, encoding='latin-1'))
     pad = bytearray(force_bytes(pad, encoding='latin-1'))
