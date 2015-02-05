@@ -10,6 +10,7 @@ from django.http import HttpResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django.utils.unittest import skipUnless
+from django.views.decorators.csrf import csrf_exempt
 
 from debreach.compat import force_text, get_random_string
 from debreach.context_processors import csrf
@@ -24,12 +25,16 @@ else:
     chr = unichr
 
 
+def test_view(request):
+    return HttpResponse()
+
+
 class TestCSRFCryptMiddleware(TestCase):
 
     def test_not_encoded(self):
         request = RequestFactory().post('/', {'csrfmiddlewaretoken': 'abc123'})
         middleware = CSRFCryptMiddleware()
-        middleware.process_request(request)
+        middleware.process_view(request, test_view, (), {})
         self.assertEqual(request.POST.get('csrfmiddlewaretoken'), 'abc123')
 
     def test_encoded(self):
@@ -38,7 +43,7 @@ class TestCSRFCryptMiddleware(TestCase):
             {'csrfmiddlewaretoken': 'aBcDeF$ACAAdVd1'}
         )
         middleware = CSRFCryptMiddleware()
-        middleware.process_request(request)
+        middleware.process_view(request, test_view, (), {})
         self.assertEqual(request.POST.get('csrfmiddlewaretoken'), 'abc123')
 
     def test_mutable_status(self):
@@ -48,7 +53,7 @@ class TestCSRFCryptMiddleware(TestCase):
         )
         request.POST._mutable = False
         middleware = CSRFCryptMiddleware()
-        middleware.process_request(request)
+        middleware.process_view(request, test_view, (), {})
         self.assertFalse(request.POST._mutable)
         request = RequestFactory().post(
             '/',
@@ -56,13 +61,13 @@ class TestCSRFCryptMiddleware(TestCase):
         )
         request.POST._mutable = True
         middleware = CSRFCryptMiddleware()
-        middleware.process_request(request)
+        middleware.process_view(request, test_view, (), {})
         self.assertTrue(request.POST._mutable)
 
     def test_header_not_encoded(self):
         request = RequestFactory().post('/', HTTP_X_CSRFTOKEN='abc123')
         middleware = CSRFCryptMiddleware()
-        middleware.process_request(request)
+        middleware.process_view(request, test_view, (), {})
         self.assertEqual(request.META.get('HTTP_X_CSRFTOKEN'), 'abc123')
 
     def test_header_encoded(self):
@@ -70,7 +75,7 @@ class TestCSRFCryptMiddleware(TestCase):
             '/', HTTP_X_CSRFTOKEN='aBcDeF$ACAAdVd1',
         )
         middleware = CSRFCryptMiddleware()
-        middleware.process_request(request)
+        middleware.process_view(request, test_view, (), {})
         self.assertEqual(request.META.get('HTTP_X_CSRFTOKEN'), 'abc123')
 
     def test_tampering(self):
@@ -78,13 +83,21 @@ class TestCSRFCryptMiddleware(TestCase):
             '/', {'csrfmiddlewaretoken': '123456$abc'})
         middleware = CSRFCryptMiddleware()
         with self.assertRaises(SuspiciousOperation):
-            middleware.process_request(request)
+            middleware.process_view(request, test_view, (), {})
 
     def test_header_tampering(self):
         request = RequestFactory().post('/', HTTP_X_CSRFTOKEN='123456$abc')
         middleware = CSRFCryptMiddleware()
         with self.assertRaises(SuspiciousOperation):
-            middleware.process_request(request)
+            middleware.process_view(request, test_view, (), {})
+
+    def test_csrf_exempt(self):
+        # This is an odd test. We're testing that, when a view is csrf_exempt,
+        # process_view will bail without performing any processing.
+        request = RequestFactory().post('/', HTTP_X_CSRFTOKEN="aB$AHM")
+        middleware = CSRFCryptMiddleware()
+        middleware.process_view(request, csrf_exempt(test_view), (), {})
+        self.assertEqual("aB$AHM", request.META['HTTP_X_CSRFTOKEN'])
 
 
 class TestRandomCommentMiddleware(TestCase):
@@ -260,7 +273,7 @@ class IntegrationTests(TestCase):
             request = RequestFactory().post(
                 '/', {'csrfmiddlewaretoken': token})
             middleware = CSRFCryptMiddleware()
-            middleware.process_request(request)
+            middleware.process_view(request, test_view, (), {})
             self.assertEqual(
                 force_text(request.POST.get('csrfmiddlewaretoken')),
                 force_text(csrf_token)
@@ -281,7 +294,7 @@ class IntegrationTests(TestCase):
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest'
             )
             middleware = CSRFCryptMiddleware()
-            middleware.process_request(request)
+            middleware.process_view(request, test_view, (), {})
             self.assertEqual(
                 force_text(request.META.get('HTTP_X_CSRFTOKEN')),
                 force_text(csrf_token)
