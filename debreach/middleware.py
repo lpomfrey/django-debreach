@@ -20,7 +20,9 @@ class CSRFCryptMiddleware(object):
         key, value = force_bytes(token, encoding='latin-1').split(b'$', 1)
         return force_text(xor(b64_decode(value), key), encoding='latin-1')
 
-    def process_request(self, request):
+    def process_view(self, request, view, view_args, view_kwargs):
+        if getattr(view, 'csrf_exempt', False):
+            return None
         if request.POST.get('csrfmiddlewaretoken') \
                 and '$' in request.POST.get('csrfmiddlewaretoken'):
             try:
