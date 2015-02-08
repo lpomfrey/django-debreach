@@ -96,8 +96,8 @@ then you can use the ``debreach.decorators.csrf_decrypt`` decorator.
 To use the ``debreach.decorators.csrf_decrypt`` decorator simply wrap
 your CSRF protected view with the decorator, like so::
 
-    @csrf_decrypt
     @csrf_protect
+    @csrf_decrypt
     def view(request, *args, **kwargs):
         return HttpResponse('')
 
