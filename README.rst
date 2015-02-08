@@ -52,7 +52,7 @@ Configuration
 -------------
 
 CSRF token masking
-++++++++++++++++++
+^^^^^^^^^^^^^^^^^^
 To mask CSRF tokens in the template add the
 ``debreach.context_processors.csrf`` context processor to the end of your 
 `TEMPLATE_CONTEXT_PROCESSORS`::
@@ -81,11 +81,29 @@ between requests. If you are passing the token using the ``X-CSRFToken``
 header (e.g. using XHR) that header will also be processed in the same way.
 
 Note that values that are unchanged by django-debreach, or rather, don't 
-contain a delimiting ``$``, will be left unmodified.
+contain a delimiting ``$``, will be left unmodified. The middleware will
+also not operate on views marked as being exempt from CSRF protection
+using the ``django.views.decorators.csrf.csrf_exempt`` decorator.
+
+CSRF protection using csrf_protect
+""""""""""""""""""""""""""""""""""
+
+If you don't use the CSRF middleware from django but, instead, apply the
+``django.views.decorators.csrf.csrf_protect`` decorator to selected
+views, and don't want to use the ``debreach.middleware.CSRFCryptMiddleware``, 
+then you can use the ``debreach.decorators.csrf_decrypt`` decorator.
+
+To use the ``debreach.decorators.csrf_decrypt`` decorator simply wrap
+your CSRF protected view with the decorator, like so::
+
+    @csrf_decrypt
+    @csrf_protect
+    def view(request, *args, **kwargs):
+        return HttpResponse('')
 
 
 Content length modification
-+++++++++++++++++++++++++++
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 django-debreach also enables you to counter the BREACH attack by randomising the
 content length of each response. This is acheived by adding a random string of 
