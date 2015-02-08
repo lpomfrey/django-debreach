@@ -9,12 +9,18 @@ from debreach.middleware import RandomCommentMiddleware
 
 
 append_random_comment = decorator_from_middleware(RandomCommentMiddleware)
+append_random_comment.__name__ = 'append_random_comment'
+append_random_comment.__doc__ = '''
+Applies a random comment to the response of the decorated view in the same
+way as the RandomCommentMiddleware. Using both, or using the decorator
+multiple times is harmless and efficient.
+'''
 
 
 def random_comment_exempt(view_func):
     """
-    Makes the random comment middleware ignore the response from the
-    decorated view.
+    Marks a view as being exempt from having its response modified by the
+    RandomCommentMiddleware
     """
     def wrapped_view(*args, **kwargs):
         response = view_func(*args, **kwargs)

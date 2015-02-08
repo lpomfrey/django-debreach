@@ -58,9 +58,11 @@ class RandomCommentMiddleware(object):
                 and response.get('Content-Type', '').startswith('text/html') \
                 and response.content \
                 and isinstance(response.content, str_types) \
-                and not getattr(response, '_random_comment_exempt', False):
+                and not getattr(response, '_random_comment_exempt', False) \
+                and not getattr(response, '_random_comment_applied', False):
             comment = '<!-- {0} -->'.format(
                 get_random_string(random.choice(range(12, 25))))
             response.content = '{0}{1}'.format(
                 force_text(response.content), comment)
+            response._random_comment_applied = True
         return response
