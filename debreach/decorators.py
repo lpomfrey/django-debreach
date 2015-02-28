@@ -9,7 +9,7 @@ from debreach.middleware import RandomCommentMiddleware, CSRFCryptMiddleware
 
 
 append_random_comment = decorator_from_middleware(RandomCommentMiddleware)
-append_random_comment.__name__ = 'append_random_comment'
+append_random_comment.__name__ = str('append_random_comment')
 append_random_comment.__doc__ = '''
 Applies a random comment to the response of the decorated view in the same
 way as the RandomCommentMiddleware. Using both, or using the decorator
@@ -30,7 +30,7 @@ def random_comment_exempt(view_func):
 
 
 csrf_decrypt = decorator_from_middleware(CSRFCryptMiddleware)
-append_random_comment.__name__ = 'append_random_comment'
+append_random_comment.__name__ = str('append_random_comment')
 append_random_comment.__doc__ = '''
 Performs the function of the CSRFCryptMiddleware, xor-ing the crypted CSRF
 token back into its original form. Using both, or using the decorator
