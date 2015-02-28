@@ -22,6 +22,7 @@ version = get_version('debreach')
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
+    os.system('python setup.py bdist_wheel upload')
     args = {'version': version}
     print('You probably want to also tag the version now:')
     print(' git tag -a release/{version} -m \'version {version}\''.format(
