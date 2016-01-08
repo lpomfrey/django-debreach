@@ -5,6 +5,7 @@ import os
 import re
 import unittest
 
+import django
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -215,6 +216,7 @@ class TestContextProcessor(TestCase):
         self.assertTrue(force_text(context['csrf_token']))
         self.assertNotEqual(force_text(context['csrf_token']), 'abc123')
 
+    @unittest.skipUnless(django.VERSION < (1, 9))
     def test_no_token_csrf(self):
         request = RequestFactory().get('/')
         context = csrf(request)
