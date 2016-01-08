@@ -216,7 +216,10 @@ class TestContextProcessor(TestCase):
         self.assertTrue(force_text(context['csrf_token']))
         self.assertNotEqual(force_text(context['csrf_token']), 'abc123')
 
-    @unittest.skipUnless(django.VERSION < (1, 9))
+    @unittest.skipUnless(
+        django.VERSION < (1, 9),
+        'The CSRF token is always present in Django 1.9+'
+    )
     def test_no_token_csrf(self):
         request = RequestFactory().get('/')
         context = csrf(request)
