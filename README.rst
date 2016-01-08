@@ -9,6 +9,9 @@ like `django-ratelimit <http://django-ratelimit.readthedocs.org/>`_, the
 techniques here should provide at least some protection against the BREACH 
 attack.
 
+.. image:: https://badge.fury.io/py/django-debreach.png
+    :target: https://badge.fury.io/py/django-debreach
+    :alt: PyPI
 .. image:: https://travis-ci.org/lpomfrey/django-debreach.png?branch=master
     :target: https://travis-ci.org/lpomfrey/django-debreach
     :alt: Build status
@@ -16,22 +19,6 @@ attack.
 .. image:: https://coveralls.io/repos/lpomfrey/django-debreach/badge.png?branch=master
     :target: https://coveralls.io/r/lpomfrey/django-debreach?branch=master
     :alt: Coverage
-
-.. image:: https://pypip.in/version/django-debreach/badge.svg
-    :target: https://pypi.python.org/pypi/django-debreach
-    :alt: Latest version
-
-.. image:: https://pypip.in/download/django-debreach/badge.svg
-    :target: https://pypi.python.org/pypi/django-debreach
-    :alt: Downloads
-
-.. image:: https://pypip.in/license/django-debreach/badge.svg
-    :target: https://pypi.python.org/pypi/django-debreach
-    :alt: License
-
-.. image:: https://pypip.in/py_versions/django-debreach/badge.svg
-    :target: https://pypi.python.org/pypi/django-debreach
-    :alt: Supported Python versions
 
 Installation
 ------------
