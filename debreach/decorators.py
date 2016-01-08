@@ -3,9 +3,9 @@ from __future__ import unicode_literals
 
 from functools import wraps
 
-from django.utils.decorators import decorator_from_middleware, available_attrs
+from django.utils.decorators import available_attrs, decorator_from_middleware
 
-from debreach.middleware import RandomCommentMiddleware, CSRFCryptMiddleware
+from debreach.middleware import CSRFCryptMiddleware, RandomCommentMiddleware
 
 
 append_random_comment = decorator_from_middleware(RandomCommentMiddleware)

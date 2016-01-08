@@ -19,7 +19,6 @@ from debreach.context_processors import csrf
 from debreach.decorators import append_random_comment, random_comment_exempt
 from debreach.middleware import CSRFCryptMiddleware, RandomCommentMiddleware
 
-
 try:
     unichr
 except NameError:
