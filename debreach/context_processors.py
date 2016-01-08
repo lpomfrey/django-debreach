@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.core.signing import b64_encode
 from django.middleware.csrf import get_token
+from django.utils.crypto import get_random_string
+from django.utils.encoding import force_bytes, force_text
 from django.utils.functional import lazy
+from django.utils.six import text_type
 
-from debreach.compat import (
-    b64_encode, get_random_string, text_type, force_bytes, force_text, xor)
+from debreach.utils import xor
 
 
 def csrf(request):

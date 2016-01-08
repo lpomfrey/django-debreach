@@ -3,19 +3,21 @@ from __future__ import unicode_literals
 
 import os
 import re
+import unittest
 
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
-from django.utils.unittest import skipUnless
+from django.utils.crypto import get_random_string
+from django.utils.encoding import force_text
 from django.views.decorators.csrf import csrf_exempt
 
-from debreach.compat import force_text, get_random_string
 from debreach.context_processors import csrf
 from debreach.decorators import append_random_comment, random_comment_exempt
 from debreach.middleware import CSRFCryptMiddleware, RandomCommentMiddleware
+
 
 try:
     unichr
@@ -220,7 +222,7 @@ class TestContextProcessor(TestCase):
         self.assertEqual(force_text(context['csrf_token']), 'NOTPROVIDED')
 
 
-@skipUnless(
+@unittest.skipUnless(
     'test_project' in os.environ.get('DJANGO_SETTINGS_MODULE', ''),
     'Not running in test_project'
 )

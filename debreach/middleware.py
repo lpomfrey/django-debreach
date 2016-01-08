@@ -5,10 +5,12 @@ import logging
 import random
 
 from django.core.exceptions import SuspiciousOperation
+from django.core.signing import b64_decode
+from django.utils.crypto import get_random_string
+from django.utils.encoding import force_bytes, force_text
+from django.utils.six import binary_type, string_types
 
-from debreach.compat import (
-    b64_decode, force_bytes, get_random_string, string_types, binary_type,
-    force_text, xor)
+from debreach.utils import xor
 
 
 log = logging.getLogger(__name__)
