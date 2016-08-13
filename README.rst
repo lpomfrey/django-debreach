@@ -1,8 +1,8 @@
 django-debreach
 ===============
 
-Basic mitigation against the `BREACH attack <http://breachattack.com/>`_ for 
-Django projects. 
+Basic/extra mitigation against the `BREACH attack <http://breachattack.com/>`_ 
+for Django projects. 
 
 When combined with rate limiting in your web-server, or by using something
 like `django-ratelimit <http://django-ratelimit.readthedocs.org/>`_, the 
@@ -38,8 +38,13 @@ Add to your `INSTALLED_APPS`::
 Configuration
 -------------
 
-CSRF token masking
-^^^^^^^^^^^^^^^^^^
+CSRF token masking (for Django < 1.10)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Django 1.10+ provides built-in support for masking CSRF tokens so you should 
+use that. Including the middleware in a Django 1.10 project will raise an
+`ImproperlyConfigured` exception.
+
 To mask CSRF tokens in the template add the
 ``debreach.context_processors.csrf`` context processor to the end of your 
 `TEMPLATE_CONTEXT_PROCESSORS`::
