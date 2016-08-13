@@ -4,7 +4,8 @@ from __future__ import unicode_literals
 import logging
 import random
 
-from django.core.exceptions import SuspiciousOperation
+import django
+from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
 from django.core.signing import b64_decode
 from django.utils.crypto import get_random_string
 from django.utils.encoding import force_bytes, force_text
@@ -12,11 +13,26 @@ from django.utils.six import binary_type, string_types
 
 from debreach.utils import xor
 
+try:
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    class MiddlewareMixin(object):
+        pass
+
 
 log = logging.getLogger(__name__)
 
 
 class CSRFCryptMiddleware(object):
+
+    def __init__(self, *args, **kwargs):
+        if django.VERSION >= (1, 10):
+            raise ImproperlyConfigured(
+                "Django 1.10 and above provides it's own CSRF mechanism to "
+                "mitigate the BREACH attack, please remove the "
+                "{}.{} middleware."
+                .format(self.__module__, self.__class__.__name__)
+            )
 
     def _decode(self, token):
         key, value = force_bytes(token, encoding='latin-1').split(b'$', 1)
@@ -52,7 +68,7 @@ class CSRFCryptMiddleware(object):
         return None
 
 
-class RandomCommentMiddleware(object):
+class RandomCommentMiddleware(MiddlewareMixin):
 
     def process_response(self, request, response):
         str_types = string_types + (binary_type,)

@@ -1,22 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf.urls import url
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
 from test_project.forms import TestForm
 
-try:
-    from django.conf.urls import patterns, url
-except ImportError:
-    from django.conf.urls.defaults import patterns, url
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     # Examples:
     # url(r'^$', 'test_project.views.home', name='home'),
     # url(r'^test_project/', include('test_project.foo.urls')),
@@ -35,4 +31,4 @@ urlpatterns = patterns(
             success_url='/'),
         name='test_form'
     ),
-)
+]
