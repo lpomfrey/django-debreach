@@ -7,7 +7,6 @@ import unittest
 
 import django
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -18,6 +17,13 @@ from django.views.decorators.csrf import csrf_exempt
 from debreach.context_processors import csrf
 from debreach.decorators import append_random_comment, random_comment_exempt
 from debreach.middleware import CSRFCryptMiddleware, RandomCommentMiddleware
+
+
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
+
 
 try:
     unichr

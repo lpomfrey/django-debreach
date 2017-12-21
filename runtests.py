@@ -12,8 +12,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'test_project.settings'
 
 
 def runtests():
-    if django.VERSION >= (1, 7):
-        django.setup()
+    django.setup()
     from django.conf import settings
     from django.test.utils import get_runner
     test_runner = get_runner(settings)(verbosity=2)
