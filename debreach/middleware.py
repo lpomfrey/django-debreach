@@ -83,4 +83,6 @@ class RandomCommentMiddleware(MiddlewareMixin):
             response.content = '{0}{1}'.format(
                 force_text(response.content), comment)
             response._random_comment_applied = True
+            if response.has_header('Content-Length'):
+                response['Content-Length'] = str(len(response.content))
         return response
