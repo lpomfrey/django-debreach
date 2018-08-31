@@ -1,3 +1,5 @@
 include LICENSE
 include README.rst
 recursive-include debreach *.html *.png *.gif *js *jpg *jpeg *svg *py
+recursive-include docs *.rst *.py make.bat Makefile
+recursive-include test_project *.py *.html
