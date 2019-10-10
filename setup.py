@@ -50,8 +50,8 @@ setup(
     version=version,
     url='http://github.com/lpomfrey/django-debreach',
     license='BSD',
-    description='Adds middleware and context processors to give some '
-                'protection against the BREACH attack in Django.',
+    description='Adds middleware to give some added protection against the '
+                'BREACH attack in Django.',
     author='Luke Pomfrey',
     author_email='lpomfrey@gmail.com',
     packages=find_packages(exclude=('test_project', 'docs')),
