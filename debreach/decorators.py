@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from functools import wraps
 
-from django.utils.decorators import available_attrs, decorator_from_middleware
+from django.utils.decorators import decorator_from_middleware
 
 from debreach.middleware import RandomCommentMiddleware
 
@@ -24,4 +24,4 @@ def random_comment_exempt(view_func):
         response = view_func(*args, **kwargs)
         response._random_comment_exempt = True
         return response
-    return wraps(view_func, assigned=available_attrs(view_func))(wrapped_view)
+    return wraps(view_func)(wrapped_view)
