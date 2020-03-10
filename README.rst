@@ -6,7 +6,7 @@ for Django projects.
 
 django-debreach provides additional protection to Django's built in CSRF
 token masking by randomising the content length of each response. This is 
-acheived by adding a random string of between 12 and 25 characters as a 
+achieved by adding a random string of between 12 and 25 characters as a 
 comment to the end of the HTML content. Note that this will only be applied to 
 responses with a content type of ``text/html``.
 
