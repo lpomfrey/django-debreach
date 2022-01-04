@@ -1,7 +1,7 @@
 django-debreach
 ===============
 
-Basic/extra mitigation against the `BREACH attack <http://breachattack.com/>`_ 
+Extra mitigation against the `BREACH attack <http://breachattack.com/>`_ 
 for Django projects. 
 
 django-debreach provides additional protection to Django's built in CSRF
@@ -10,10 +10,11 @@ achieved by adding a random string of between 12 and 25 characters as a
 comment to the end of the HTML content. Note that this will only be applied to 
 responses with a content type of ``text/html``.
 
-When combined with rate limiting in your web-server, or by using something
-like `django-ratelimit <http://django-ratelimit.readthedocs.org/>`_, the 
-techniques here should provide at least some protection against the BREACH 
-attack.
+When combined with the built-in mitigations in Django and rate limiting 
+(either in your web-server, or by using something like 
+`django-ratelimit <http://django-ratelimit.readthedocs.org/>`_), the 
+techniques here should provide a fairly comprehensive protection against the 
+BREACH attack.
 
 .. image:: https://badge.fury.io/py/django-debreach.png
     :target: https://badge.fury.io/py/django-debreach
