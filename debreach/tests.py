@@ -21,7 +21,7 @@ class TestRandomCommentMiddleware(TestCase):
     def test_noop_on_wrong_content_type(self):
         response = HttpResponse('abc', content_type='text/plain')
         request = RequestFactory().get('/')
-        middleware = RandomCommentMiddleware()
+        middleware = RandomCommentMiddleware(lambda request: response)
         response = middleware.process_response(request, response)
         self.assertEqual(response.content, b'abc')
 
@@ -38,7 +38,7 @@ class TestRandomCommentMiddleware(TestCase):
 </html>'''
         response = HttpResponse(html, content_type='text/html')
         request = RequestFactory().get('/')
-        middleware = RandomCommentMiddleware()
+        middleware = RandomCommentMiddleware(lambda request: response)
         response = middleware.process_response(request, response)
         self.assertNotEqual(response.content, html)
 
@@ -55,7 +55,7 @@ class TestRandomCommentMiddleware(TestCase):
 </html>'''.format(''.join(chr(x) for x in range(9999)))
         response = HttpResponse(html, content_type='text/html')
         request = RequestFactory().get('/')
-        middleware = RandomCommentMiddleware()
+        middleware = RandomCommentMiddleware(lambda request: response)
         response = middleware.process_response(request, response)
         self.assertNotEqual(force_str(response.content), force_str(html))
 
@@ -67,7 +67,7 @@ class TestRandomCommentMiddleware(TestCase):
         response = HttpResponse(html)
         response._random_comment_exempt = True
         request = RequestFactory().get('/')
-        middleware = RandomCommentMiddleware()
+        middleware = RandomCommentMiddleware(lambda request: response)
         response = middleware.process_response(request, response)
         self.assertEqual(force_str(response.content), html)
 
@@ -75,14 +75,14 @@ class TestRandomCommentMiddleware(TestCase):
         request = RequestFactory().get('/')
         response = HttpResponse('')
         del response['Content-Type']
-        middleware = RandomCommentMiddleware()
+        middleware = RandomCommentMiddleware(lambda request: response)
         processed_response = middleware.process_response(request, response)
         self.assertEqual(response, processed_response)
 
     def test_empty_response_body_ignored(self):
         request = RequestFactory().get('/')
         response = HttpResponse('')
-        middleware = RandomCommentMiddleware()
+        middleware = RandomCommentMiddleware(lambda request: response)
         processed_response = middleware.process_response(request, response)
         self.assertEqual(len(processed_response.content), 0)
 
