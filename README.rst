@@ -4,6 +4,9 @@ django-debreach
 Extra mitigation against the `BREACH attack <http://breachattack.com/>`_ 
 for Django projects. 
 
+Note that as of version 4,.2 Django includes this protection natively and this 
+library is not needed.
+
 django-debreach provides additional protection to Django's built in CSRF
 token masking by randomising the content length of each response. This is 
 achieved by adding a random string of between 12 and 25 characters as a 
