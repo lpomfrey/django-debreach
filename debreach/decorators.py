@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from functools import wraps
 
 from django.utils.decorators import decorator_from_middleware
