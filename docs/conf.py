@@ -14,7 +14,8 @@
 import os
 import re
 import sys
-from distutils import version
+
+from packaging import version
 
 
 init_py = open('../debreach/__init__.py').read()
@@ -55,7 +56,7 @@ copyright = u'2013, Luke Pomfrey'
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
-version = u'{0}'.format(version.StrictVersion(version_string))
+version = u'{0}'.format(version.Version(version_string))
 # The full version, including alpha/beta/rc tags.
 release = version_string
 
